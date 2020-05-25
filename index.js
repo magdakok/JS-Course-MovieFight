@@ -5,26 +5,30 @@ const fetchData = async (searchTerm) => {
             s: searchTerm,
         }
     });
-    console.log(response.data);
+
+    if(response.data.Error) {
+        return [];
+    }
+    return response.data.Search;
 }
 
 const input = document.querySelector('input');
 
-const debounce = (fn,delay=1000) => {
-    let timeoutId;
-    return (...args) => { //in case we want more arguments
-        if(timeoutId) {
-            clearTimeout(timeoutId);
-        }
-        timeoutId = setTimeout(()=>{
-            fn.apply(null, args); //in case we want more arguments
-        }, delay);
-    }
-};
-
-
 //DEBOUNCING AN INPUT - wait for some time to pass after the last event to actually run a function
-const onInput = event => {
-        fetchData(event.target.value);
+const onInput = async event => {
+        const movies = await fetchData(event.target.value);
+        printData(movies);
 }
 input.addEventListener('input', debounce(onInput,1000));
+
+const printData = (movies) => {
+    for (let movie of movies) {
+        const div = document.createElement('div');
+        div.innerHTML = `
+            <img src="${movie.Poster}" class="image"/>
+            <h1>${movie.Title}</h1>
+            <h2>(${movie.Year})</h2>
+        `;
+        document.querySelector('#searchResults').appendChild(div);
+    };
+};
