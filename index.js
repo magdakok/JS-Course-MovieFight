@@ -8,21 +8,23 @@ const fetchData = async (searchTerm) => {
     console.log(response.data);
 }
 
-let timeoutId;
 const input = document.querySelector('input');
 
-// //we have to divide it into two:
-// input.addEventListener('input', (event)=> {
-//     fetchData(event.target.value);
-// });
-
-const onInput = event => {
-    //data is fetched after one second, but timer turns off if input value changes between than one second -> effect: less unnecessary requests
-    if (timeoutId) {
-        clearTimeout(timeoutId)
+const debounce = (fn,delay=1000) => {
+    let timeoutId;
+    return (...args) => { //in case we want more arguments
+        if(timeoutId) {
+            clearTimeout(timeoutId);
+        }
+        timeoutId = setTimeout(()=>{
+            fn.apply(null, args); //in case we want more arguments
+        }, delay);
     }
-    timeoutId = setTimeout(()=>{
+};
+
+
+//DEBOUNCING AN INPUT - wait for some time to pass after the last event to actually run a function
+const onInput = event => {
         fetchData(event.target.value);
-    },1000);
 }
-input.addEventListener('input', onInput);
+input.addEventListener('input', debounce(onInput,1000));
