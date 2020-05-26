@@ -33,6 +33,11 @@ const resultsWrapper = document.querySelector('.results');
 const onInput = async event => {
     const movies = await fetchData(event.target.value);
 
+    if (!movies.length) {
+        dropdown.classList.remove('is-active');
+        return; //if there's no movies on the list hide dropdown menu and return from this function
+    }
+
     resultsWrapper.innerHTML = '';
 
     dropdown.classList.add('is-active');
