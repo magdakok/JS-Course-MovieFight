@@ -42,7 +42,7 @@ const onInput = async event => {
         option.classList.add('dropdown-item');
         option.innerHTML =`
             <img src="${imgSrc}"/>
-            ${movie.Title}
+            ${movie.Title} (${movie.Year})
         `;
         resultsWrapper.appendChild(option);
     }
@@ -51,3 +51,10 @@ const onInput = async event => {
 
 //DEBOUNCING AN INPUT - wait for some time to pass after the last event to actually run a function
 input.addEventListener('input', debounce(onInput,1000));
+
+//CLOSING THE DROPDOWN MENU WHEN CLICK OUTSIDE
+document.addEventListener('click', event =>{
+    if (!root.contains(event.target)){
+        dropdown.classList.remove('is-active');
+    }
+});
