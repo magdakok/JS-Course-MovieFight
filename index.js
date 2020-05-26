@@ -1,71 +1,31 @@
-const fetchData = async (searchTerm) => {
-    const response = await axios.get('http://www.omdbapi.com/', {
-        params: {
-            apikey: 'd71db054',
-            s: searchTerm,
-        }
-    });
-
-    if(response.data.Error) {
-        return [];
-    }
-    return response.data.Search;
-}
-
-const root = document.querySelector('.autocomplete');
-root.innerHTML = `
-    <label><b>Search for a movie</b></label>
-    <input class="input" />
-    <div class="dropdown">
-        <div class="dropdown-menu">
-            <div class="dropdown-content results">
-            
-            </div>
-        </div>
-    </div>
-
-`;
-const input = document.querySelector('input');
-const dropdown = document.querySelector('.dropdown');
-const resultsWrapper = document.querySelector('.results');
-
-
-const onInput = async event => {
-    const movies = await fetchData(event.target.value);
-
-    if (!movies.length) {
-        dropdown.classList.remove('is-active');
-        return; //if there's no movies on the list hide dropdown menu and return from this function
-    }
-
-    resultsWrapper.innerHTML = '';
-
-    dropdown.classList.add('is-active');
-    for(let movie of movies) {
-        const option = document.createElement('a');
+createAutoComplete({
+    root: document.querySelector('.autocomplete'),
+    renderOption(movie) {
         const imgSrc = movie.Poster === 'N/A' ? '' : movie.Poster;
-        option.classList.add('dropdown-item');
-        option.innerHTML =`
+        return `
             <img src="${imgSrc}"/>
             ${movie.Title} (${movie.Year})
         `;
-        option.addEventListener('click', ()=>{
-            dropdown.classList.remove('is-active');
-            input.value = movie.Title;
-            onMovieSelect(movie);
+    },
+    onOptionSelect(movie) {
+        onMovieSelect(movie);
+    },
+    inputValue(movie) {
+        return movie.Title;
+    },
+    async fetchData (searchTerm) {
+        const response = await axios.get('http://www.omdbapi.com/', {
+            params: {
+                apikey: 'd71db054',
+                s: searchTerm,
+            }
         });
-        resultsWrapper.appendChild(option);
-    }
-}
-
-//DEBOUNCING AN INPUT - wait for some time to pass after the last event to actually run a function
-input.addEventListener('input', debounce(onInput,1000));
-
-//CLOSING THE DROPDOWN MENU WHEN CLICK OUTSIDE
-document.addEventListener('click', event =>{
-    if (!root.contains(event.target)){
-        dropdown.classList.remove('is-active');
-    }
+    
+        if(response.data.Error) {
+            return [];
+        }
+        return response.data.Search;
+    } 
 });
 
 const onMovieSelect = async (movie) => {
