@@ -66,6 +66,7 @@ const onMovieSelect = async (movie, summaryElement, side) => {
 };
 
 const runComparison = () => {
+   
     const leftSideStats = document.querySelectorAll('#left-summary .notification');
     const rightSideStats = document.querySelectorAll('#right-summary .notification');
 
@@ -77,16 +78,17 @@ const runComparison = () => {
 
 
         if (!leftStatValue|| !rightStatValue) {
-            leftStat.classList.add('is-primary');
-            rightStat.classList.add('is-primary');
-            leftStat.classList.remove('is-warning');
-            rightStat.classList.remove('is-warning');
+            
         } else if (leftStatValue > rightStatValue) {
             leftStat.classList.remove('is-primary');
             leftStat.classList.add('is-warning');
+            rightStat.classList.add('is-primary');
+            rightStat.classList.remove('is-warning');
         } else {
             rightStat.classList.remove('is-primary');
             rightStat.classList.add('is-warning');
+            leftStat.classList.add('is-primary');
+            leftStat.classList.remove('is-warning');
         }
 
     });
@@ -95,7 +97,7 @@ const runComparison = () => {
 const movieTemplate = movieDetail => {
     const dollars = parseInt(movieDetail.BoxOffice.replace(/\$/g, '').replace(/,/g, ''));
     const metascore = parseInt(movieDetail.Metascore);
-    const imdbRating = parseFloat(movieDetail.imdbRating);
+    const imdbRating = parseFloat(movieDetail.imdbRating)*10;
     const imdbVotes = parseInt(movieDetail.imdbVotes.replace(/,/g, ''));
 
     const awards = movieDetail.Awards.split(' ').reduce((prev, word) => {
