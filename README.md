@@ -1,4 +1,4 @@
-# The Modern Javascript Bootcamp Course exercise (code-along)
+# The Modern Javascript Bootcamp Course exercise: Movie Fight (code-along)
 
 ## :movie_camera: https://magdakok.github.io/JS-Course-MovieFight/
 
